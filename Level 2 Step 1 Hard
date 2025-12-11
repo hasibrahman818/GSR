@@ -1,0 +1,110 @@
+# Level 2 Step 1 Hard
+## Exercise 4 from Hasib
+
+### b. View detail of dev/md0
+```bash
+mdadm --detail /dev/md0
+```
+### Check disks
+```bash
+lsblk
+```
+### d. Check Physical Volume Assignment
+```bash
+pvs
+```
+### e. Check Volume Groups
+```bash
+vgs
+```
+
+### Display Volume Group Information
+```bash
+vgdisplay vg0
+```
+
+### Verify the volume vg0 is mounted
+```bash
+df -h | grep vg0
+```
+
+
+
+
+
+
+
+
+
+## Exercise 4
+### Create the RAID 6 array
+#### a) Create RAID6 array
+mdadm --create /dev/md0 --level=6 --raid-devices=4 /dev/sdb /dev/sdc /dev/sdd /dev/sde --spare-devices=2 /dev/sdf /dev/sdg
+
+#### b) Verify array layout
+cat /proc/mdstat
+
+mdadm --detail /dev/md0
+
+#### c) To verify 
+lsblk
+
+### d) To create physical volumes on 2additional disks
+pvcreate /dev/md0 /dev/sdh /dev/sdi
+
+#### To check
+pvs
+
+### e) To create group of LVM(LogicaL Volume Manager)volumes containing physical volumes 
+vgcreate vg0 /dev/md0 /dev/sdh
+
+#### To check:
+vgdisplay vg0
+
+
+
+## Exercise 6
+### Disk Names
+
+* nvme0n2
+* nvme0n3
+* nvme0n4
+* nvme0n5
+* nvme0n6
+
+### Package Source Path
+Append "contrib non-free" after each line main
+```bash
+nano /etc/apt/sources.list
+```
+
+### Check ZFS
+
+```bash
+zfs version
+```
+
+### Command to list all block devices:
+```bash
+lsblk
+```
+
+### Command to check pool status:
+```bash
+zpool status userpool
+```
+
+### Confirm /userpool and /userpool/users are mounted:
+```bash
+zfs list
+```
+
+### Test IO benchmark using dd and /dev/urandom
+```bash
+dd if=/dev/urandom of=/userpool/users/testfile.bin bs=1M count=10 oflag=dsync
+```
+### Clean/Remove the test file
+
+```bash
+rm /userpool/users/zfs_testfile.bin
+```
